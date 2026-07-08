@@ -51,11 +51,13 @@ app.use('/api/import', importRoute);
 app.use(errorHandler);
 
 // ─── Start server ───
-app.listen(PORT, () => {
-  console.log(`\n🚀 GrowEasy CSV Importer API running on http://localhost:${PORT}`);
-  console.log(`   Health check: http://localhost:${PORT}/api/health`);
-  console.log(`   CORS origin:  ${ALLOWED_ORIGIN}`);
-  console.log(`   AI Model:     Llama 3.3 70B (Groq)\n`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`\n🚀 GrowEasy CSV Importer API running on http://localhost:${PORT}`);
+    console.log(`   Health check: http://localhost:${PORT}/api/health`);
+    console.log(`   CORS origin:  ${ALLOWED_ORIGIN}`);
+    console.log(`   AI Model:     Llama 3.3 70B (Groq)\n`);
+  });
+}
 
 export default app;
