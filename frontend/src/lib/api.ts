@@ -1,6 +1,9 @@
 import type { APIResponse } from './types';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+// All requests go to Next.js API proxy routes on the same domain.
+// The proxy (src/app/api/*) forwards to the real backend server-side.
+// This eliminates CORS issues and removes the need for NEXT_PUBLIC_API_URL.
+const API_BASE = '';
 
 /**
  * Upload a CSV file to the backend for AI extraction.
@@ -25,7 +28,7 @@ export async function importCSV(file: File): Promise<APIResponse> {
 }
 
 /**
- * Check backend health.
+ * Check backend health (via Next.js proxy).
  */
 export async function checkHealth(): Promise<boolean> {
   try {
