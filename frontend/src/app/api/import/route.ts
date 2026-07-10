@@ -12,15 +12,26 @@ export async function POST(request: NextRequest) {
     const backendRes = await fetch(`${BACKEND_URL}/api/import`, {
       method: 'POST',
       body: formData,
-      // Do NOT set Content-Type — fetch sets it automatically with the correct boundary
     });
 
-    const data = await backendRes.json();
-    return NextResponse.json(data, { status: backendRes.status });
+    const contentType = backendRes.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      const data = await backendRes.json();
+      return NextResponse.json(data, { status: backendRes.status });
+    } else {
+      const text = await backendRes.text();
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Backend returned status ${backendRes.status} (Non-JSON): ${text.slice(0, 300)}`
+        },
+        { status: backendRes.status }
+      );
+    }
   } catch (err) {
     console.error('[proxy /api/import]', err);
     return NextResponse.json(
-      { success: false, error: 'Failed to reach backend. Check BACKEND_URL.' },
+      { success: false, error: `Failed to connect to backend at ${BACKEND_URL}: ${err instanceof Error ? err.message : String(err)}` },
       { status: 502 }
     );
   }
