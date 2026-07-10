@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server';
 
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3001';
+const rawBackendUrl = process.env.BACKEND_URL || 
+  (process.env.NODE_ENV === 'production' 
+    ? 'https://groweasy-qilk.vercel.app' 
+    : 'http://localhost:3001');
+
+const BACKEND_URL = rawBackendUrl.replace(/\/$/, '');
 
 export async function GET() {
   try {

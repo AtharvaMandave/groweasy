@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Server-side env var — read at runtime, NOT baked in at build time.
-// Set BACKEND_URL in Vercel's frontend project Environment Variables.
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3001';
+const rawBackendUrl = process.env.BACKEND_URL || 
+  (process.env.NODE_ENV === 'production' 
+    ? 'https://groweasy-qilk.vercel.app' 
+    : 'http://localhost:3001');
+
+const BACKEND_URL = rawBackendUrl.replace(/\/$/, '');
 
 export async function POST(request: NextRequest) {
   try {
